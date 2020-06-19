@@ -1,5 +1,5 @@
-# cmake-project-template
+# Dyna Dubu
 
-Uses CMake for generating and Conan for package management.
+A cross platform library for loading shared libraries.
 
-![Build](https://github.com/Husenap/cmake-project-template/workflows/Build/badge.svg)
+![Build](https://github.com/Husenap/dyna-dubu/workflows/Build/badge.svg)
