@@ -42,7 +42,11 @@ void SharedLibrary::Load() {
 		std::cout << "Successfully loaded library: " << libraryToLoad << std::endl;
 	}
 #else
+#ifdef __APPLE__
+	std::string libraryToLoad = std::string("./lib") + mName + ".dylib";
+#else
 	std::string libraryToLoad = std::string("./lib") + mName + ".so";
+#endif
 	mHandle                   = dlopen(libraryToLoad.c_str(), RTLD_LAZY);
 	if (mHandle == nullptr) {
 		std::cerr << "Cannot load library[" << dlerror() << "]: " << libraryToLoad << std::endl;
