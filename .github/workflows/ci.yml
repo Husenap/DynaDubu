@@ -46,3 +46,24 @@ jobs:
       run: |
         cd .build/
         ctest . --verbose
+
+  build-macos:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Conan
+      run: |
+        pip3 install conan
+
+    - name: Generate
+      run: cmake . -B.build -DCMAKE_BUILD_TYPE=Debug
+
+    - name: Build
+      run: cmake --build .build/
+
+    - name: Test
+      run: |
+        cd .build/
+        ctest . --verbose
