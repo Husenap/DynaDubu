@@ -5,9 +5,6 @@
 #	include <windows.h>
 #else
 #	include <dlfcn.h>
-#	include <sys/types.h>
-#	include <unistd.h>
-#	include <limits.h>
 #endif
 
 #include <iostream>
@@ -45,14 +42,7 @@ void SharedLibrary::Load() {
 		std::cout << "Successfully loaded library: " << libraryToLoad << std::endl;
 	}
 #else
-	char cwd[PATH_MAX + 1];
-	std::string workingDir;
-	if (getcwd(cwd, sizeof(cwd)) == NULL) {
-		std::cerr << "Failed to get cwd" << std::endl;
-	} else {
-		workingDir = cwd;
-	}
-	std::string libraryToLoad = workingDir + "/" + std::string("lib") + mName + ".so";
+	std::string libraryToLoad = std::string("./lib") + mName + ".so";
 	mHandle                   = dlopen(libraryToLoad.c_str(), RTLD_LAZY);
 	if (mHandle == nullptr) {
 		std::cerr << "Cannot load library[" << dlerror() << "]: " << libraryToLoad << std::endl;

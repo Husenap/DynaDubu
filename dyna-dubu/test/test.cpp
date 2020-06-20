@@ -5,7 +5,7 @@
 TEST(dyna_dubu, load) {
 	dd::SharedLibrary dubuLib("dubu");
 	dd::SharedLibrary minaLib("mina");
-	dd::SharedLibrary noLib("non_existing");
+	dd::SharedLibrary noLib("nonexistent");
 
 	EXPECT_EQ(dubuLib.IsLoaded(), true);
 	EXPECT_EQ(minaLib.IsLoaded(), true);
