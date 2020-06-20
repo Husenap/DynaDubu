@@ -1,12 +1,15 @@
 set(target_name "dyna-dubu")
 
 set(src_files
-    "src/main.cpp")
+	"src/dyna-dubu/SharedLibrary.h"
+	"src/dyna-dubu/SharedLibrary.cpp")
 
 # Project
 add_library(${target_name} STATIC ${src_files})
 
 source_group("src" FILES "src/main.cpp")
+
+target_include_directories(${target_name} INTERFACE "src")
 
 set_target_properties(${target_name} PROPERTIES FOLDER ${PROJECT_NAME})
 
