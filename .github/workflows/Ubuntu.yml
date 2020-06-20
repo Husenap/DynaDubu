@@ -9,10 +9,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install GCC
+    - name: Setup GCC
       run: |
-        sudo apt update
-        sudo apt install gcc-9 g++-9
+        export CC=/usr/local/bin/gcc-9
+        export CXX=/usr/local/bin/g++-9
 
     - name: Install Conan
       run: |
