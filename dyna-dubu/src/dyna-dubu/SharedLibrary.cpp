@@ -10,11 +10,15 @@
 #include <iostream>
 #include <string>
 
+#include <chrono>
+#include <filesystem>
+
 namespace dd {
 
 SharedLibrary::SharedLibrary(const char* libraryName) {
 	mName   = libraryName;
 	mHandle = nullptr;
+	mLastWriteTime = -1;
 
 	Load();
 }
@@ -33,28 +37,34 @@ bool SharedLibrary::IsLoaded() const {
 	return mHandle != nullptr;
 }
 
+bool SharedLibrary::NeedsToReload() const {
+	return GetLastWriteTime() != mLastWriteTime;
+}
+
 void SharedLibrary::Load() {
 #ifdef WIN32
-	std::string libraryToLoad = mName + ".dll";
-	mHandle                   = static_cast<void*>(LoadLibrary(TEXT(libraryToLoad.c_str())));
+	mPath = mName + ".dll";
+	mHandle                   = static_cast<void*>(LoadLibrary(TEXT(mPath.c_str())));
 	if (mHandle == nullptr) {
-		std::cerr << "Cannot load library[" << GetLastError() << "]: " << libraryToLoad << std::endl;
+		std::cerr << "Cannot load library[" << GetLastError() << "]: " << mPath << std::endl;
 	} else {
-		std::cout << "Successfully loaded library: " << libraryToLoad << std::endl;
+		std::cout << "Successfully loaded library: " << mPath << std::endl;
 	}
 #else
 #	ifdef __APPLE__
-	std::string libraryToLoad = std::string("./lib") + mName + ".dylib";
+	mPath = std::string("./lib") + mName + ".dylib";
 #	else
-	std::string libraryToLoad = std::string("./lib") + mName + ".so";
+	mPath = std::string("./lib") + mName + ".so";
 #	endif
-	mHandle                   = dlopen(libraryToLoad.c_str(), RTLD_LAZY);
+	mHandle                   = dlopen(mPath.c_str(), RTLD_LAZY);
 	if (mHandle == nullptr) {
-		std::cerr << "Cannot load library[" << dlerror() << "]: " << libraryToLoad << std::endl;
+		std::cerr << "Cannot load library[" << dlerror() << "]: " << mPath << std::endl;
 	} else {
-		std::cout << "Successfully loaded library: " << libraryToLoad << std::endl;
+		std::cout << "Successfully loaded library: " << mPath << std::endl;
 	}
 #endif
+
+	mLastWriteTime = GetLastWriteTime();
 }
 
 void SharedLibrary::Unload() {
@@ -66,6 +76,13 @@ void SharedLibrary::Unload() {
 #endif
 		mHandle = nullptr;
 	}
+}
+
+long SharedLibrary::GetLastWriteTime() const {
+	if(!std::filesystem::exists(mPath)){
+		return -1;
+	}
+	return std::filesystem::last_write_time(mPath).time_since_epoch().count();
 }
 
 void* SharedLibrary::GetSymbol(const char* symbol) {

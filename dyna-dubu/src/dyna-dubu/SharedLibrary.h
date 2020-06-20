@@ -13,16 +13,7 @@ public:
 	void Reload();
 	bool IsLoaded() const;
 
-private:
-	void Load();
-	void Unload();
-
-	void* GetSymbol(const char* symbol);
-
-	std::string mName;
-	void* mHandle;
-
-	std::unordered_map<std::string, void*> mSymbolCache;
+	bool NeedsToReload() const;
 
 public:
 	template <typename T, typename ...Args>
@@ -34,6 +25,21 @@ public:
 	T Call(const char* functionName, Args... args){
 		return GetFunction<T, Args...>(functionName)(args...);
 	}
+
+private:
+	void Load();
+	void Unload();
+
+	long GetLastWriteTime() const;
+	
+	void* GetSymbol(const char* symbol);
+
+	std::string mName;
+	std::string mPath;
+	long mLastWriteTime;
+	void* mHandle;
+
+	std::unordered_map<std::string, void*> mSymbolCache;
 
 };
 
