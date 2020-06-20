@@ -13,6 +13,10 @@ target_include_directories(${target_name} INTERFACE "src")
 
 set_target_properties(${target_name} PROPERTIES FOLDER ${PROJECT_NAME})
 
+# Test dynamic library
+add_library("dubulib" SHARED "test/dubulib/dubulib.cpp")
+add_library("minalib" SHARED "test/minalib/minalib.cpp")
+
 # Tests
 add_executable(${target_name}_test "test/test.cpp")
 

@@ -3,5 +3,6 @@
 #include <dyna-dubu/SharedLibrary.h>
 
 TEST(dyna_dubu, constructor) {
-	dd::SharedLibrary lib("cool_library");
+	dd::SharedLibrary dubuLib("dubulib");
+	dd::SharedLibrary minaLib("minalib");
 }
