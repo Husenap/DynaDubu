@@ -25,6 +25,7 @@ SharedLibrary::~SharedLibrary() {
 
 void SharedLibrary::Reload() {
 	Unload();
+	mSymbolCache.clear();
 	Load();
 }
 
@@ -37,16 +38,16 @@ void SharedLibrary::Load() {
 	std::string libraryToLoad = mName + ".dll";
 	mHandle                   = static_cast<void*>(LoadLibrary(TEXT(libraryToLoad.c_str())));
 	if (mHandle == nullptr) {
-		std::cerr << "Cannot load library: " << libraryToLoad << std::endl;
+		std::cerr << "Cannot load library[" << GetLastError() << "]: " << libraryToLoad << std::endl;
 	} else {
 		std::cout << "Successfully loaded library: " << libraryToLoad << std::endl;
 	}
 #else
-#ifdef __APPLE__
+#	ifdef __APPLE__
 	std::string libraryToLoad = std::string("./lib") + mName + ".dylib";
-#else
+#	else
 	std::string libraryToLoad = std::string("./lib") + mName + ".so";
-#endif
+#	endif
 	mHandle                   = dlopen(libraryToLoad.c_str(), RTLD_LAZY);
 	if (mHandle == nullptr) {
 		std::cerr << "Cannot load library[" << dlerror() << "]: " << libraryToLoad << std::endl;
@@ -65,6 +66,35 @@ void SharedLibrary::Unload() {
 #endif
 		mHandle = nullptr;
 	}
+}
+
+void* SharedLibrary::GetSymbol(const char* symbol) {
+	void* symbolHandle = nullptr;
+
+	auto it = mSymbolCache.find(symbol);
+	if (it != mSymbolCache.end()) {
+		return it->second;
+	}
+
+#ifdef WIN32
+	symbolHandle = GetProcAddress(static_cast<HINSTANCE>(mHandle), symbol);
+	if (symbolHandle == nullptr) {
+		std::cerr << "Cannot load symbol " << symbol << ": " << GetLastError() << std::endl;
+	}
+#else
+	dlerror();
+	symbolHandle           = dlsym(mHandle, symbol);
+	const char* dlsymError = dlerror();
+	if (dlsymError != nullptr) {
+		std::cerr << "Cannot load symbol " << symbol << ": " << dlsymError << std::endl;
+	}
+#endif
+
+	if (symbolHandle != nullptr) {
+		mSymbolCache[symbol] = symbolHandle;
+	}
+
+	return symbolHandle;
 }
 
 }  // namespace dd

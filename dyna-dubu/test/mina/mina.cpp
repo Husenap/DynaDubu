@@ -1,6 +1,18 @@
-#include <string>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-std::string name(){
+#include "../plugin.h"
+
+const char* name() {
 	return "mina";
 }
+
+int magic(int a, int b){
+	return a + b;
+}
+
+#ifdef __cplusplus
+}
+#endif
 
