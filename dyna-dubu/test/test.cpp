@@ -2,6 +2,8 @@
 
 #include <dyna-dubu/SharedLibrary.h>
 
+#include "plugin.h"
+
 TEST(dyna_dubu, load) {
 	dd::SharedLibrary dubuLib("dubu");
 	dd::SharedLibrary minaLib("mina");
@@ -37,9 +39,6 @@ TEST(dyna_dubu, magic_function){
 	dd::SharedLibrary dubuLib("dubu");
 	dd::SharedLibrary minaLib("mina");
 
-	int dubuMagi0 = dubuLib.GetFunction<int, int, int>("magic")(4, 5);
-	int minaMagi0 = minaLib.GetFunction<int, int, int>("magic")(4, 5);
-
 	int dubuMagic = dubuLib.Call<int>("magic", 4, 5);
 	int minaMagic = minaLib.Call<int>("magic", 4, 5);
 
@@ -47,3 +46,18 @@ TEST(dyna_dubu, magic_function){
 	EXPECT_EQ(minaMagic, 9);
 }
 
+TEST(dyna_dubu, interfaces){
+	dd::SharedLibrary dubuLib("dubu");
+	dd::SharedLibrary minaLib("mina");
+
+	ITofu* dubuTofu = dubuLib.Call<ITofu*>("CreateTofu");
+	ITofu* minaTofu = minaLib.Call<ITofu*>("CreateTofu");
+
+	dubuTofu->Cook();
+	dubuTofu->Eat();
+	dubuTofu->Release();
+
+	minaTofu->Cook();
+	minaTofu->Eat();
+	minaTofu->Release();
+}
