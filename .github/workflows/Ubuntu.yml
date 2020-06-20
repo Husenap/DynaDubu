@@ -9,11 +9,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Setup GCC
-      run: |
-        export CC=/usr/local/bin/gcc-9
-        export CXX=/usr/local/bin/g++-9
-
     - name: Install Conan
       run: |
         pip3 install wheel setuptools
@@ -22,7 +17,7 @@ jobs:
         sudo ln -s ~/.local/bin/conan /usr/local/bin/conan
 
     - name: Generate
-      run: cmake . -B.build -DCMAKE_BUILD_TYPE=Debug
+      run: cmake . -B.build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=gcc-9 -DCMAKE_CXX_COMPILER=g++-9
 
     - name: Build
       run: cmake --build .build/
