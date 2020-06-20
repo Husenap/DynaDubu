@@ -1,4 +1,3 @@
-#define PLUGIN_EXPORT
 #include "../plugin.h"
 
 #include <iostream>
