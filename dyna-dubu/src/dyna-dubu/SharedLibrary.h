@@ -10,13 +10,7 @@ public:
 	SharedLibrary(const char* libraryName);
 	~SharedLibrary();
 
-	template <typename T, typename ...Args>
-	T (*GetFunction(const char* functionName))(Args...) {
-		return reinterpret_cast<T(*)(Args...)>(GetSymbol(functionName));
-	}
-
 	void Reload();
-
 	bool IsLoaded() const;
 
 private:
@@ -29,6 +23,18 @@ private:
 	void* mHandle;
 
 	std::unordered_map<std::string, void*> mSymbolCache;
+
+public:
+	template <typename T, typename ...Args>
+	T (*GetFunction(const char* functionName))(Args...) {
+		return reinterpret_cast<T(*)(Args...)>(GetSymbol(functionName));
+	}
+	
+	template <typename T, typename ...Args>
+	T Call(const char* functionName, Args... args){
+		return GetFunction<T, Args...>(functionName)(args...);
+	}
+
 };
 
 }  // namespace dd
