@@ -1,0 +1,28 @@
+name: Ubuntu
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Conan
+      run: |
+        pip3 install wheel setuptools
+        pip3 install conan
+        export PATH=$PATH:/home/runner/.local/bin
+        sudo ln -s ~/.local/bin/conan /usr/local/bin/conan
+
+    - name: Generate
+      run: cmake . -B.build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=gcc-9 -DCMAKE_CXX_COMPILER=g++-9
+
+    - name: Build
+      run: cmake --build .build/
+
+    - name: Test
+      run: |
+        cd .build/
+        ctest . --verbose

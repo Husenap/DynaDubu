@@ -2,4 +2,6 @@
 
 A cross platform library for loading shared libraries.
 
-![Build](https://github.com/Husenap/dyna-dubu/workflows/Build/badge.svg)
+![Windows](https://github.com/Husenap/dyna-dubu/workflows/Windows/badge.svg)
+![Ubuntu](https://github.com/Husenap/dyna-dubu/workflows/Ubuntu/badge.svg)
+![MacOS](https://github.com/Husenap/dyna-dubu/workflows/MacOS/badge.svg)

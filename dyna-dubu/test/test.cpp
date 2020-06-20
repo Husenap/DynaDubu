@@ -2,6 +2,11 @@
 
 #include <dyna-dubu/SharedLibrary.h>
 
+#include <functional>
+#include <memory>
+
+#include "plugin.h"
+
 TEST(dyna_dubu, load) {
 	dd::SharedLibrary dubuLib("dubu");
 	dd::SharedLibrary minaLib("mina");
@@ -12,7 +17,7 @@ TEST(dyna_dubu, load) {
 	EXPECT_EQ(noLib.IsLoaded(), false);
 }
 
-TEST(dyna_dubu, reload){
+TEST(dyna_dubu, reload) {
 	dd::SharedLibrary dubuLib("dubu");
 
 	EXPECT_EQ(dubuLib.IsLoaded(), true);
@@ -20,4 +25,40 @@ TEST(dyna_dubu, reload){
 	dubuLib.Reload();
 
 	EXPECT_EQ(dubuLib.IsLoaded(), true);
+}
+
+TEST(dyna_dubu, name_function) {
+	dd::SharedLibrary dubuLib("dubu");
+	dd::SharedLibrary minaLib("mina");
+
+	std::string dubuName = dubuLib.Call<const char*>("name");
+	std::string minaName = minaLib.Call<const char*>("name");
+
+	EXPECT_EQ(dubuName, "dubu");
+	EXPECT_EQ(minaName, "mina");
+}
+
+TEST(dyna_dubu, magic_function) {
+	dd::SharedLibrary dubuLib("dubu");
+	dd::SharedLibrary minaLib("mina");
+
+	int dubuMagic = dubuLib.Call<int>("magic", 4, 5);
+	int minaMagic = minaLib.Call<int>("magic", 4, 5);
+
+	EXPECT_EQ(dubuMagic, 20);
+	EXPECT_EQ(minaMagic, 9);
+}
+
+TEST(dyna_dubu, interfaces) {
+	dd::SharedLibrary dubuLib("dubu");
+	dd::SharedLibrary minaLib("mina");
+
+	std::shared_ptr<ITofu> dubuTofu(dubuLib.Call<ITofu*>("CreateTofu"));
+	std::shared_ptr<ITofu> minaTofu(minaLib.Call<ITofu*>("CreateTofu"));
+
+	dubuTofu->Cook();
+	dubuTofu->Eat();
+
+	minaTofu->Cook();
+	minaTofu->Eat();
 }
