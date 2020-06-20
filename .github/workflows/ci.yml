@@ -11,7 +11,6 @@ jobs:
 
     - name: Install Conan
       run: |
-        pip3 install wheel setuptools
         pip3 install conan
 
     - name: Generate
