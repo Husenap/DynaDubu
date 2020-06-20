@@ -23,9 +23,9 @@ PLUGIN_API const char* name();
 PLUGIN_API int magic(int a, int b);
 
 struct ITofu {
+	virtual ~ITofu()    = default;
 	virtual void Cook() = 0;
 	virtual void Eat()  = 0;
-	virtual void Release() = 0;
 };
 
 PLUGIN_API ITofu* CreateTofu();

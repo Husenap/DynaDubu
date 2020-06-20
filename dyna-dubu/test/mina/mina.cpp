@@ -4,10 +4,9 @@
 #include <iostream>
 
 struct Mina : public ITofu {
-	virtual ~Mina() = default;
-	void Cook() override { std::cout << "Mina is cooking some tofu" << std::endl; }
-	void Eat() override { std::cout << "Mina is eating some tofu" << std::endl; }
-	void Release() override { std::cout << "Mina is releasing some tofu" << std::endl; }
+	virtual ~Mina() { std::cout << "Mina is releasing some tofu" << std::endl; }
+	virtual void Cook() { std::cout << "Mina is cooking some tofu" << std::endl; }
+	virtual void Eat() { std::cout << "Mina is eating some tofu" << std::endl; }
 };
 
 #ifdef __cplusplus
@@ -18,7 +17,7 @@ const char* name() {
 	return "mina";
 }
 
-int magic(int a, int b){
+int magic(int a, int b) {
 	return a + b;
 }
 
