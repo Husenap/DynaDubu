@@ -37,7 +37,7 @@ jobs:
         sudo ln -s ~/.local/bin/conan /usr/local/bin/conan
 
     - name: Generate
-      run: cmake . -B.build
+      run: cmake . -B.build -DCMAKE_BUILD_TYPE=Debug
 
     - name: Build
       run: cmake --build .build/
