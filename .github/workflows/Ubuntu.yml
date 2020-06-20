@@ -9,6 +9,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Install GCC
+        sudo apt update
+        sudo apt install gcc-9 g++-9
+
     - name: Install Conan
       run: |
         pip3 install wheel setuptools
