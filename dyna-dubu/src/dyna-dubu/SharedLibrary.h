@@ -8,6 +8,7 @@ public:
 	~SharedLibrary();
 
 private:
+	void* mHandle;
 };
 
 }  // namespace dd

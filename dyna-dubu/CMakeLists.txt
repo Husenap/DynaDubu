@@ -11,11 +11,13 @@ source_group("src" FILES "src/main.cpp")
 
 target_include_directories(${target_name} INTERFACE "src")
 
+target_link_libraries(${target_name} ${CMAKE_DL_LIBS})
+
 set_target_properties(${target_name} PROPERTIES FOLDER ${PROJECT_NAME})
 
 # Test dynamic library
-add_library("dubulib" SHARED "test/dubulib/dubulib.cpp")
-add_library("minalib" SHARED "test/minalib/minalib.cpp")
+add_library("dubu" SHARED "test/dubu/dubu.cpp")
+add_library("mina" SHARED "test/mina/mina.cpp")
 
 # Tests
 add_executable(${target_name}_test "test/test.cpp")
