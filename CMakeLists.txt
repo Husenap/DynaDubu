@@ -10,8 +10,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 include("cmake/compiler_features.cmake")
 include("cmake/compiler_warnings.cmake")
 include("cmake/conan.cmake")
+include("cmake/util.cmake")
 
 include(GoogleTest)
 enable_testing()
 
 add_subdirectory("dyna-dubu")
+add_subdirectory("example")

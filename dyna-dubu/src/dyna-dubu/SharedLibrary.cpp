@@ -16,8 +16,8 @@
 namespace dd {
 
 SharedLibrary::SharedLibrary(const char* libraryName) {
-	mName   = libraryName;
-	mHandle = nullptr;
+	mName          = libraryName;
+	mHandle        = nullptr;
 	mLastWriteTime = -1;
 
 	Load();
@@ -43,8 +43,8 @@ bool SharedLibrary::NeedsToReload() const {
 
 void SharedLibrary::Load() {
 #ifdef WIN32
-	mPath = mName + ".dll";
-	mHandle                   = static_cast<void*>(LoadLibrary(TEXT(mPath.c_str())));
+	mPath   = mName + ".dll";
+	mHandle = static_cast<void*>(LoadLibrary(TEXT(mPath.c_str())));
 	if (mHandle == nullptr) {
 		std::cerr << "Cannot load library[" << GetLastError() << "]: " << mPath << std::endl;
 	} else {
@@ -52,11 +52,11 @@ void SharedLibrary::Load() {
 	}
 #else
 #	ifdef __APPLE__
-	mPath = std::string("./lib") + mName + ".dylib";
+	mPath   = std::string("./lib") + mName + ".dylib";
 #	else
 	mPath = std::string("./lib") + mName + ".so";
 #	endif
-	mHandle                   = dlopen(mPath.c_str(), RTLD_LAZY);
+	mHandle = dlopen(mPath.c_str(), RTLD_LAZY);
 	if (mHandle == nullptr) {
 		std::cerr << "Cannot load library[" << dlerror() << "]: " << mPath << std::endl;
 	} else {
@@ -79,10 +79,17 @@ void SharedLibrary::Unload() {
 }
 
 long SharedLibrary::GetLastWriteTime() const {
-	if(!std::filesystem::exists(mPath)){
-		return -1;
+	try {
+		if (!std::filesystem::exists(mPath)) {
+			return -1;
+		}
+		return std::filesystem::last_write_time(mPath).time_since_epoch().count();
+	} catch (const std::filesystem::filesystem_error& err) {
+		std::cout << "Failed to get time for library: " << mPath << std::endl;
+		std::cout << "filesystem_error: " << err.what() << std::endl;
 	}
-	return std::filesystem::last_write_time(mPath).time_since_epoch().count();
+
+	return -1;
 }
 
 void* SharedLibrary::GetSymbol(const char* symbol) {
